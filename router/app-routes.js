@@ -9,11 +9,11 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/profile", (req, res) => {
-  res.redirect(`/profile?username=${req.body.username}`);
+  res.redirect(`/profile?name=${req.body.name}`);
 });
 
 router.get("/profile", (req, res) => {
-  res.render("profile", { username: req.query.username });
+  res.render("profile", { name: req.query.name });
 });
 
 router.get("/logout", (req, res) => {

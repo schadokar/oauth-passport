@@ -1,14 +1,17 @@
+// load config
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config/config.env" });
 const express = require("express");
 const bodyParser = require("body-parser");
-const dotenv = require("dotenv");
 const morgan = require("morgan");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const passportSetup = require("./config/passport-setup");
+const passport = require("passport");
+const session = require("express-session");
 
-// load config
-dotenv.config({ path: "./config/config.env" });
 // application routes
-const appRoutes = require("./router/app-routes");
+const routes = require("./router");
 
 // connect DB
 connectDB();
@@ -19,6 +22,18 @@ const app = express();
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+// set ejs as view-engine
+app.set("view engine", "ejs");
+
+// setup public folder
+app.use(express.static("./public"));
+
+// enable session
+app.use(
+  session({ secret: "isitrequire", resave: false, saveUninitialized: false })
+);
+
 // Express body parser
 app.use(cors());
 app.use(bodyParser.json());
@@ -30,14 +45,13 @@ app.use(
   })
 );
 
-// set ejs as view-engine
-app.set("view engine", "ejs");
-
-// setup public folder
-app.use(express.static("./public"));
+// initalize passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // app routes
-app.use("/", appRoutes);
+app.use("/", routes.appRoutes);
+app.use("/auth", routes.twitterAuthRoutes);
 
 app.listen(3000, () => {
   console.log("app is listening to port 3000");
