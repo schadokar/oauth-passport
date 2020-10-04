@@ -1,9 +1,24 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+const morgan = require("morgan");
 const cors = require("cors");
+const connectDB = require("./config/db");
+
+// load config
+dotenv.config({ path: "./config/config.env" });
+// application routes
 const appRoutes = require("./router/app-routes");
+
+// connect DB
+connectDB();
+
 // create an app instance
 const app = express();
+
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 // Express body parser
 app.use(cors());
 app.use(bodyParser.json());
