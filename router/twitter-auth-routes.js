@@ -12,6 +12,7 @@ router.get("/twitter", passport.authenticate("twitter"));
 router.get(
   "/twitter/callback",
   passport.authenticate("twitter", {
+    scope: ["profile"],
     failureRedirect: "/login",
   }),
   (req, res) => {

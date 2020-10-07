@@ -18,6 +18,7 @@ passport.use(
       consumerKey: process.env.TWITTER_API_KEY,
       consumerSecret: process.env.TWITTER_API_SECRET_KEY,
       callbackURL: "/auth/twitter/callback",
+      includeEmail: true,
     },
     async (token, tokenSecret, profile, done) => {
       let user = await User.findOne({
@@ -32,7 +33,6 @@ passport.use(
         }).save();
       }
       done(null, user);
-      console.log(profile.emails, token, tokenSecret);
     }
   )
 );
