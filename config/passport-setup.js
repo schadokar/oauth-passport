@@ -22,13 +22,18 @@ passport.use(
     },
     async (token, tokenSecret, profile, done) => {
       let user = await User.findOne({
-        twitterId: profile.id,
+        "twitter.id": profile.id,
       });
       if (user) {
         console.log("user is already registered: ", user);
       } else {
         user = await new User({
-          twitterId: profile.id,
+          twitter: {
+            id: profile.id,
+            token,
+            tokenSecret,
+            email: profile.emails,
+          },
           displayName: profile.displayName,
         }).save();
       }

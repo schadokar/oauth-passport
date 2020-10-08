@@ -1,16 +1,14 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  twitterId: {
-    type: String,
-    required: true,
+  twitter: {
+    id: String,
+    token: String,
+    tokenSecret: String,
+    email: String,
   },
-  displayName: {
-    type: String,
-  },
-  email: {
-    type: String,
-  },
+  displayName: String,
+  email: String,
   createdAt: {
     type: Date,
     default: Date.now,
