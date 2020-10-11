@@ -1,4 +1,5 @@
 const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const TwitterStrategy = require("passport-twitter").Strategy;
 const User = require("../models/User");
 
@@ -12,6 +13,36 @@ passport.deserializeUser((id, done) => {
   });
 });
 
+// Google strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      let user = await User.findOne({
+        "google.id": profile.id,
+      });
+      if (user) {
+        console.log("user is already registered: ", user);
+      } else {
+        user = await new User({
+          google: {
+            id: profile.id,
+            token: accessToken,
+            email: profile.emails[0].value || undefined,
+          },
+          displayName: profile.displayName,
+        }).save();
+      }
+      done(null, user);
+    }
+  )
+);
+
+// Twitter strategy
 passport.use(
   new TwitterStrategy(
     {
@@ -32,7 +63,7 @@ passport.use(
             id: profile.id,
             token,
             tokenSecret,
-            email: profile.emails,
+            email: profile.emails[0].value || "undefined",
           },
           displayName: profile.displayName,
         }).save();

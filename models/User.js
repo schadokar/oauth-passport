@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
+  google: {
+    id: String,
+    token: String,
+    tokenSecret: String,
+    email: String,
+  },
   twitter: {
     id: String,
     token: String,

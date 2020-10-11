@@ -51,6 +51,7 @@ app.use(passport.session());
 
 // app routes
 app.use("/", routes.appRoutes);
+app.use("/auth", routes.googleAuthRoutes);
 app.use("/auth", routes.twitterAuthRoutes);
 
 app.listen(3000, () => {
